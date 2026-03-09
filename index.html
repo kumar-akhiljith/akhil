@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akhiljith Kumar — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --xp-blue: #0a246a;
+    --xp-silver: #ece9d8;
+    --xp-silver-dark: #d4d0c8;
+    --xp-silver-darker: #bab5a8;
+    --window-shadow: 4px 4px 14px rgba(0,0,0,0.55);
+    --font: 'Tahoma', 'MS Sans Serif', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: var(--font);
+    font-size: 11px;
+    background: radial-gradient(ellipse at 50% 40%, #6699cc 0%, #1a4a8a 100%) fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+    user-select: none;
+  }
+
+  /* ===== SYSTEM SCREENS ===== */
+  .system-screen {
+    display: none; position: fixed; inset: 0;
+    background: #000; color: #fff;
+    font-size: 28px; font-weight: bold;
+    align-items: center; justify-content: center;
+    z-index: 99999; letter-spacing: 2px; font-family: var(--font);
+  }
+  .system-screen.show { display: flex; }
+
+  /* ===== DESKTOP ===== */
+  .desktop { min-height: calc(100vh - 42px); padding: 12px 12px 12px 100px; position: relative; }
+
+  /* ===== DESKTOP ICONS ===== */
+  .desktop-icons {
+    display: flex; flex-direction: column; gap: 14px;
+    position: fixed; top: 12px; left: 8px; z-index: 1;
+  }
+  .desktop-icon {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 4px; border: 1px solid transparent; border-radius: 2px; width: 70px;
+  }
+  .desktop-icon:hover { background: rgba(6,66,156,0.5); border-color: rgba(255,255,255,0.3); }
+  .desktop-icon .di-img {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #5588ee, #1144bb);
+    border: 2px solid rgba(255,255,255,0.4); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: bold; color: white;
+  }
+  .desktop-icon span { color: white; font-size: 10px; text-align: center; text-shadow: 1px 1px 2px black, -1px -1px 2px black; line-height: 1.2; }
+  .di-svg { width: 36px; height: 36px; display: block; }
+
+  /* ===== RIGHT-CLICK CONTEXT MENU ===== */
+  .ctx-menu {
+    display: none; position: fixed; z-index: 7000;
+    background: var(--xp-silver); border: 1px solid #888;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.45); min-width: 180px;
+  }
+  .ctx-menu.show { display: block; }
+  .ctx-item {
+    padding: 5px 18px; font-size: 11px; cursor: pointer; color: #000;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
+  }
+  .ctx-item:hover { background: #0831d9; color: white; }
+  .ctx-item.disabled { color: #999; cursor: default; }
+  .ctx-item.disabled:hover { background: none; color: #999; }
+  .ctx-sep { height: 1px; background: var(--xp-silver-darker); margin: 3px 0; border-bottom: 1px solid white; }
+  .ctx-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ===== WINDOW ===== */
+  .window {
+    background: var(--xp-silver);
+    border: 2px solid #0831d9;
+    box-shadow: var(--window-shadow), inset 1px 1px 0 #fff;
+    position: absolute; min-width: 280px;
+    border-radius: 8px 8px 4px 4px; overflow: visible; z-index: 10;
+  }
+  .window.inactive { border-color: #7a96df; }
+  .window.closed { display: none !important; }
+  .window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; border-radius: 0; }
+  .window.maximized .window-content { max-height: calc(100vh - 90px) !important; }
+
+  /* ===== RESIZE HANDLES ===== */
+  .resize-handle {
+    position: absolute; z-index: 20;
+    background: transparent;
+  }
+  .resize-e  { right: -4px; top: 8px; bottom: 8px; width: 8px; cursor: e-resize; }
+  .resize-s  { bottom: -4px; left: 8px; right: 8px; height: 8px; cursor: s-resize; }
+  .resize-se { right: -4px; bottom: -4px; width: 14px; height: 14px; cursor: se-resize; }
+  .resize-w  { left: -4px; top: 8px; bottom: 8px; width: 8px; cursor: w-resize; }
+  .resize-n  { top: -4px; left: 8px; right: 8px; height: 8px; cursor: n-resize; }
+  .resize-ne { right: -4px; top: -4px; width: 14px; height: 14px; cursor: ne-resize; }
+  .resize-nw { left: -4px; top: -4px; width: 14px; height: 14px; cursor: nw-resize; }
+  .resize-sw { left: -4px; bottom: -4px; width: 14px; height: 14px; cursor: sw-resize; }
+
+  .exp-card { cursor: pointer; }
+  .exp-card:hover .xp-section-header { background: linear-gradient(180deg, #5a9ef8 0%, #2a6adf 100%); }
+
+  /* ===== TITLE BAR ===== */
+  .title-bar {
+    background: linear-gradient(180deg, #4a9af5 0%, #1762d0 8%, #1055be 90%, #0831d9 100%);
+    padding: 4px 6px; display: flex; align-items: center; gap: 4px;
+    cursor: move; border-radius: 7px 7px 0 0;
+  }
+  .window.inactive .title-bar { background: linear-gradient(180deg, #9db4d6 0%, #7a96c0 100%); }
+  .title-bar-text {
+    color: white; font-weight: bold; font-size: 12px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .title-buttons { display: flex; gap: 2px; flex-shrink: 0; }
+  .title-btn {
+    width: 21px; height: 21px; border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.4); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: bold; font-family: var(--font);
+    background: linear-gradient(180deg, #e8d8c8 0%, #c0b0a0 100%);
+    color: #000; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset; line-height: 1;
+  }
+  .title-btn:hover { background: linear-gradient(180deg, #ffeedd 0%, #d0b898 100%); }
+  .title-btn.close { background: linear-gradient(180deg, #e86040 0%, #c03020 100%); color: white; }
+  .title-btn.close:hover { background: linear-gradient(180deg, #ff7050 0%, #e04030 100%); }
+
+  /* ===== MENU BAR ===== */
+  .menu-bar {
+    background: var(--xp-silver); border-bottom: 1px solid var(--xp-silver-dark);
+    padding: 2px 4px; display: flex; gap: 0; position: relative;
+  }
+  .menu-item { padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; position: relative; }
+  .menu-item:hover, .menu-item.open { background: #0831d9; color: white; }
+  .menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--xp-silver); border: 1px solid #888;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.35); z-index: 9999; min-width: 170px;
+  }
+  .menu-item.open .menu-dropdown { display: block; }
+  .menu-dropdown-item {
+    padding: 4px 16px; font-size: 11px; cursor: pointer; white-space: nowrap;
+    color: #000; display: flex; align-items: center; gap: 8px;
+  }
+  .menu-dropdown-item:hover { background: #0831d9; color: white; }
+  .menu-dropdown-sep { height: 1px; background: var(--xp-silver-darker); margin: 2px 0; }
+  .menu-shortcut { margin-left: auto; color: #888; font-size: 10px; }
+  .menu-dropdown-item:hover .menu-shortcut { color: #ccc; }
+
+  /* ===== WINDOW CONTENT ===== */
+  .window-content { overflow-y: auto; max-height: 460px; padding: 12px; }
+  .window-content::-webkit-scrollbar { width: 16px; }
+  .window-content::-webkit-scrollbar-track { background: var(--xp-silver-dark); border: 1px solid var(--xp-silver-darker); }
+  .window-content::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #e0ddd0, #b0ad9f); border: 1px solid var(--xp-silver-darker); border-radius: 2px; }
+
+  /* ===== STATUS BAR ===== */
+  .status-bar { background: var(--xp-silver-dark); border-top: 1px solid var(--xp-silver-darker); padding: 3px 8px; display: flex; gap: 8px; font-size: 10px; color: #333; }
+  .status-panel { border: 1px solid var(--xp-silver-darker); border-right-color: #fff; border-bottom-color: #fff; padding: 1px 6px; background: var(--xp-silver); }
+
+  /* ===== TASKBAR ===== */
+  .taskbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 42px;
+    background: linear-gradient(180deg, #245edc 0%, #1a4acd 5%, #1a4acd 95%, #0c2a9a 100%);
+    display: flex; align-items: stretch; z-index: 5000;
+    box-shadow: 0 -1px 0 rgba(255,255,255,0.3);
+  }
+  .start-btn {
+    background: linear-gradient(180deg, #57a530 0%, #3b8020 5%, #3b8020 95%, #1e5a08 100%);
+    color: white; font-weight: bold; font-size: 13px;
+    padding: 0 16px 0 10px; border: none;
+    border-right: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    font-family: var(--font); border-radius: 0 12px 12px 0;
+    margin: 2px 4px 2px 0; text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    font-style: italic; box-shadow: 1px 0 4px rgba(0,0,0,0.3); flex-shrink: 0;
+  }
+  .start-btn:hover { background: linear-gradient(180deg, #68c038 0%, #4a9028 5%, #4a9028 95%, #2a6e10 100%); }
+  .win-logo { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; width: 18px; height: 18px; flex-shrink: 0; }
+  .win-logo span { border-radius: 1px; }
+  .win-logo span:nth-child(1) { background: #ff4444; }
+  .win-logo span:nth-child(2) { background: #44bb44; }
+  .win-logo span:nth-child(3) { background: #4444ff; }
+  .win-logo span:nth-child(4) { background: #ffaa00; }
+  .taskbar-tasks { display: flex; align-items: center; gap: 3px; flex: 1; padding: 4px 4px; overflow: hidden; }
+  .task-btn {
+    background: linear-gradient(180deg, #3070d8 0%, #1050c0 50%, #2060d0 100%);
+    color: white; border: 1px solid rgba(255,255,255,0.25); border-bottom-color: rgba(0,0,0,0.3);
+    padding: 3px 8px; cursor: pointer; font-family: var(--font);
+    font-size: 11px; border-radius: 3px; display: flex; align-items: center; gap: 4px;
+    white-space: nowrap; min-width: 80px; max-width: 140px; height: 30px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5); overflow: hidden;
+  }
+  .task-btn:hover { background: linear-gradient(180deg, #4080e8 0%, #2060d0 50%, #3070e0 100%); }
+  .task-btn.active { background: linear-gradient(180deg, #1040b0 0%, #3070d8 50%, #1040b0 100%); border-color: rgba(0,0,0,0.4); box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3); }
+  .task-icon-box { width: 14px; height: 14px; flex-shrink: 0; background: rgba(255,255,255,0.2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+  .taskbar-tray { display: flex; align-items: center; gap: 6px; padding: 0 10px; background: linear-gradient(180deg, #1a40c0 0%, #0e30b0 100%); border-left: 1px solid rgba(255,255,255,0.2); color: white; font-size: 11px; flex-shrink: 0; }
+
+  /* ===== START MENU ===== */
+  .start-menu { position: fixed; bottom: 42px; left: 0; width: 280px; background: white; border: 1px solid #0831d9; box-shadow: 4px 0 12px rgba(0,0,0,0.5); z-index: 6000; display: none; border-radius: 0 8px 0 0; overflow: hidden; }
+  .start-menu.open { display: block; }
+  .start-menu-header { background: linear-gradient(90deg, #245edc, #1a4acd); padding: 10px 12px; color: white; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+  .start-avatar { width: 36px; height: 36px; border-radius: 3px; background: linear-gradient(135deg, #4a8de8, #1a5acd); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: white; border: 2px solid rgba(255,255,255,0.4); }
+  .start-menu-item { display: flex; align-items: center; gap: 10px; padding: 6px 12px; cursor: pointer; font-size: 11px; border-bottom: 1px solid var(--xp-silver-dark); }
+  .start-menu-item:hover { background: #0831d9; color: white; }
+  .sm-icon { width: 20px; height: 20px; background: linear-gradient(135deg, #5588ee, #1144bb); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; flex-shrink: 0; }
+  .start-menu-footer { background: var(--xp-silver-dark); display: flex; justify-content: flex-end; padding: 6px 8px; gap: 6px; border-top: 2px solid var(--xp-silver-darker); }
+  .start-footer-btn { display: flex; align-items: center; gap: 5px; padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 3px; font-family: var(--font); background: linear-gradient(180deg, #e8e0d0, #c8c0b0); border: 1px solid #aaa; border-bottom-color: #888; }
+  .start-footer-btn:hover { background: linear-gradient(180deg, #0831d9, #1050c0); color: white; }
+
+  /* ===== XP SECTIONS ===== */
+  .xp-section { background: white; border: 2px solid #4a8de8; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+  .xp-section-header { background: linear-gradient(180deg, #4a8de8 0%, #1a5acd 100%); color: white; font-weight: bold; font-size: 11px; padding: 4px 10px; }
+  .xp-section-body { padding: 10px; font-size: 11px; }
+  .skill-tag { display: inline-block; background: linear-gradient(180deg, #e8f0ff, #c8d8f8); border: 1px solid #8aa8e0; border-bottom-color: #6888c0; border-right-color: #6888c0; color: #1a3a8a; font-size: 10px; padding: 2px 7px; border-radius: 3px; margin: 2px; box-shadow: 1px 1px 0 white inset; }
+  .job-entry { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--xp-silver-dark); }
+  .job-entry:last-child { border-bottom: none; margin-bottom: 0; }
+  .job-title { font-weight: bold; color: var(--xp-blue); font-size: 12px; }
+  .job-company { color: #666; font-size: 10px; }
+  .job-date { color: #888; font-size: 10px; float: right; }
+  .job-bullets { margin-top: 4px; padding-left: 14px; }
+  .job-bullets li { margin-bottom: 2px; color: #222; font-size: 10px; }
+  .project-card { background: linear-gradient(180deg, #f8f8ff, #eeeeff); border: 1px solid #aabbdd; border-radius: 4px; padding: 8px; margin-bottom: 8px; cursor: pointer; }
+  .project-card:hover { background: linear-gradient(180deg, #eeeeff, #dde0ff); border-color: #8899cc; }
+  .project-title { font-weight: bold; color: var(--xp-blue); font-size: 11px; }
+  .project-hint { font-size: 9px; color: #888; margin-top: 2px; font-style: italic; }
+  .project-desc { margin-top: 4px; color: #333; font-size: 10px; }
+  .profile-card { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+  .profile-avatar { width: 72px; height: 72px; border: 3px solid #4a8de8; border-radius: 4px; background: linear-gradient(135deg, #1a6af5, #0a3ad9); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; flex-shrink: 0; box-shadow: 2px 2px 4px rgba(0,0,0,0.3), inset 1px 1px 0 rgba(255,255,255,0.4); }
+  .profile-info h1 { font-size: 15px; font-weight: bold; color: var(--xp-blue); margin-bottom: 4px; }
+  .profile-info p { font-size: 11px; color: #444; margin-bottom: 2px; }
+  .profile-badge { display: inline-block; background: var(--xp-blue); color: white; font-size: 9px; padding: 1px 5px; border-radius: 2px; margin-top: 4px; }
+  .contact-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid var(--xp-silver-dark); font-size: 11px; }
+  .contact-row:hover { background: #d8e8ff; }
+  .contact-label { color: #666; width: 60px; flex-shrink: 0; font-weight: bold; }
+  .contact-value { color: #0066cc; flex: 1; word-break: break-all; }
+  .contact-btn { background: linear-gradient(180deg, #e0e0f0, #c8c8e0); border: 1px solid #8888b0; border-bottom-color: #5555a0; border-right-color: #5555a0; padding: 2px 10px; border-radius: 3px; cursor: pointer; font-size: 10px; font-family: var(--font); flex-shrink: 0; }
+  .contact-btn:hover { background: linear-gradient(180deg, #e8e8ff, #d0d0f0); }
+  .contact-btn:active { border-color: #4444a0; }
+  .copy-btn { background: linear-gradient(180deg, #e8e8e8, #c8c8c8); border: 1px solid #aaa; border-bottom-color: #888; border-right-color: #888; padding: 1px 7px; border-radius: 3px; cursor: pointer; font-size: 10px; font-family: var(--font); margin-left: 4px; }
+  .copy-btn:hover { background: linear-gradient(180deg, #f0f0f0, #d8d8d8); }
+  .copy-btn.copied { background: linear-gradient(180deg, #d0f0d0, #a8d8a8); border-color: #44a044; color: #006600; }
+  .skill-row { margin-bottom: 8px; }
+  .skill-name { font-size: 11px; color: #222; margin-bottom: 2px; }
+  .skill-bar-bg { background: var(--xp-silver-dark); border: 1px solid var(--xp-silver-darker); border-right-color: white; border-bottom-color: white; height: 14px; border-radius: 2px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; background: repeating-linear-gradient(90deg, #1a6af5 0px, #1a6af5 8px, #1e82ff 8px, #1e82ff 12px); border-radius: 1px; transition: width 1s ease; position: relative; }
+  .skill-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: rgba(255,255,255,0.25); }
+  .edu-entry { display: flex; gap: 10px; padding: 8px; background: linear-gradient(180deg, #f0f4ff, #e0e8f8); border: 1px solid #b0c0e0; border-radius: 3px; margin-bottom: 8px; }
+  .edu-label { width: 30px; height: 30px; flex-shrink: 0; background: linear-gradient(135deg, #4a8de8, #1a5acd); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; }
+  .edu-degree { font-weight: bold; font-size: 11px; color: var(--xp-blue); }
+  .edu-school { font-size: 10px; color: #444; }
+  .edu-detail { font-size: 10px; color: #666; margin-top: 2px; }
+  .achievement { display: flex; gap: 8px; align-items: flex-start; padding: 6px; background: linear-gradient(180deg, #fffaf0, #fff0d0); border: 1px solid #e0c060; border-radius: 3px; margin-bottom: 6px; }
+  .ach-icon { width: 28px; height: 28px; flex-shrink: 0; background: linear-gradient(135deg, #ffd700, #cc8800); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; text-align: center; line-height: 1.1; }
+  .welcome-art { text-align: center; padding: 16px; background: linear-gradient(180deg, #e8f4ff, #c8e0ff); border-bottom: 2px solid var(--xp-silver-dark); margin-bottom: 12px; }
+  .welcome-avatar { width: 60px; height: 60px; margin: 0 auto 8px; background: linear-gradient(135deg, #4a8de8, #1a5acd); border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .welcome-name { font-size: 20px; font-weight: bold; color: var(--xp-blue); }
+  .welcome-sub { color: #2255aa; font-size: 12px; margin-top: 4px; }
+  .xp-btn { background: linear-gradient(180deg, #e0e8ff, #c0ccee); border: 1px solid #8899bb; border-bottom-color: #5566aa; border-right-color: #5566aa; padding: 4px 12px; border-radius: 3px; cursor: pointer; font-size: 11px; font-family: var(--font); font-weight: bold; color: var(--xp-blue); box-shadow: 1px 1px 0 white inset; }
+  .xp-btn:hover { background: linear-gradient(180deg, #eef4ff, #ccd8ff); }
+  .xp-btn:active { background: linear-gradient(180deg, #c0ccee, #d8e0ff); border-color: #334499; }
+  .sep { height: 1px; background: var(--xp-silver-darker); margin: 6px 0; border-bottom: 1px solid white; }
+  .highlight-box { background: #ffffd0; border: 1px solid #c0c000; padding: 6px 8px; border-radius: 3px; font-size: 10px; margin-bottom: 8px; }
+
+  /* ===== RAM ERROR ===== */
+  .error-overlay { display: none; position: fixed; inset: 0; z-index: 8999; }
+  .error-overlay.show { display: block; }
+  .error-dialog { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--xp-silver); border: 2px solid #0831d9; box-shadow: var(--window-shadow); border-radius: 8px 8px 4px 4px; z-index: 9000; width: 360px; }
+  .error-dialog.show { display: block; }
+  .error-body { padding: 16px; display: flex; gap: 12px; align-items: flex-start; }
+  .error-icon { width: 40px; height: 40px; flex-shrink: 0; background: linear-gradient(135deg, #ff4444, #cc0000); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; border: 2px solid #ff8888; }
+  .error-text { font-size: 11px; line-height: 1.6; flex: 1; }
+  .error-footer { padding: 8px 12px; display: flex; justify-content: center; border-top: 1px solid var(--xp-silver-dark); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .desktop-icons { display: none; }
+    .desktop { padding: 8px; }
+    .window { position: relative !important; width: 100% !important; max-width: 100% !important; left: 0 !important; top: 0 !important; margin-bottom: 10px; border-radius: 8px 8px 4px 4px; }
+    .window.closed { display: none !important; }
+    .window-content { max-height: none !important; }
+    .windows-container { display: flex; flex-direction: column; gap: 8px; }
+    .taskbar-tasks { gap: 2px; }
+    .task-btn { min-width: 50px; padding: 3px 6px; font-size: 10px; }
+  }
+  @media (max-width: 480px) { .task-label { display: none; } }
+
+  /* ===== WINDOW POSITIONS (desktop) ===== */
+  @media (min-width: 769px) {
+    #win-about      { top: 30px;  left: 110px; width: 380px; }
+    #win-projects   { top: 50px;  left: 510px; width: 440px; }
+    #win-experience { top: 370px; left: 110px; width: 440px; }
+    #win-skills     { top: 360px; left: 570px; width: 320px; }
+    #win-contact    { top: 30px;  left: 970px; width: 340px; }
+    #win-education  { top: 370px; left: 910px; width: 380px; }
+    #win-welcome    { top: 650px; left: 110px; width: 360px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SYSTEM SCREENS -->
+<div class="system-screen" id="screen-restart">Restarting...</div>
+<div class="system-screen" id="screen-shutdown">Shutting down...</div>
+
+<!-- RAM ERROR -->
+<div class="error-overlay" id="errorOverlay" onclick="closeError()"></div>
+<div class="error-dialog" id="errorDialog">
+  <div class="title-bar">
+    <div class="title-bar-text">Program Error</div>
+    <div class="title-buttons">
+      <button class="title-btn close" onclick="closeError()">X</button>
+    </div>
+  </div>
+  <div class="error-body">
+    <div class="error-icon">!</div>
+    <div class="error-text">
+      <strong>FATAL: Insufficient system resources</strong><br><br>
+      Windows cannot complete this operation.<br><br>
+      RAM Usage: <strong>101% (641 MB / 640 MB)</strong><br>
+      Error code: 0x0000007E<br>
+      SYSTEM_THREAD_EXCEPTION_NOT_HANDLED<br><br>
+      The operation has been terminated to prevent system instability. Please close some programs and try again.
+    </div>
+  </div>
+  <div class="error-footer">
+    <button class="xp-btn" onclick="closeError()">OK</button>
+  </div>
+</div>
+
+<!-- DESKTOP ICONS -->
+<div class="desktop-icons">
+  <div class="desktop-icon" onclick="openWindow('win-about')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-about" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#20c4a8"/><stop offset="100%" stop-color="#0e7a68"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-about)"/><circle cx="18" cy="13" r="5" fill="white" opacity="0.95"/><path d="M8 29 Q8 21 18 21 Q28 21 28 29" fill="white" opacity="0.95"/></svg>
+    <span>About Me</span>
+  </div>
+  <div class="desktop-icon" onclick="openWindow('win-projects')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-proj" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5c842"/><stop offset="100%" stop-color="#c8900a"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-proj)"/><rect x="5" y="15" width="26" height="16" rx="2" fill="white" opacity="0.9"/><path d="M5 15 Q5 12 8 12 L15 12 L17 15 Z" fill="white" opacity="0.75"/><rect x="10" y="19" width="16" height="2" rx="1" fill="#c8900a" opacity="0.45"/><rect x="10" y="23" width="11" height="2" rx="1" fill="#c8900a" opacity="0.45"/></svg>
+    <span>Projects</span>
+  </div>
+  <div class="desktop-icon" onclick="openWindow('win-experience')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-exp" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9b6dff"/><stop offset="100%" stop-color="#5a20cc"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-exp)"/><rect x="6" y="15" width="24" height="14" rx="2" fill="white" opacity="0.9"/><rect x="13" y="11" width="10" height="5" rx="1" fill="none" stroke="white" stroke-width="2.2" opacity="0.9"/><rect x="5" y="20" width="26" height="2" fill="rgba(90,32,204,0.3)"/><rect x="15" y="19" width="6" height="4" rx="1" fill="#5a20cc" opacity="0.6"/></svg>
+    <span>Experience</span>
+  </div>
+  <div class="desktop-icon" onclick="openWindow('win-skills')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-sk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff7a2f"/><stop offset="100%" stop-color="#c03d00"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-sk)"/><path d="M18 7 L20.5 12 L26 11 L25 16.5 L30 19 L27 24 L29 29 L23.5 28.5 L21 33 L18 29 L15 33 L12.5 28.5 L7 29 L9 24 L6 19 L11 16.5 L10 11 L15.5 12 Z" fill="white" opacity="0.85"/><circle cx="18" cy="19.5" r="4.5" fill="url(#g-sk)"/></svg>
+    <span>Skills</span>
+  </div>
+  <div class="desktop-icon" onclick="openWindow('win-contact')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-co" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3399ff"/><stop offset="100%" stop-color="#0044cc"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-co)"/><rect x="5" y="11" width="26" height="18" rx="2" fill="white" opacity="0.9"/><path d="M5 13 L18 22 L31 13" fill="none" stroke="#0044cc" stroke-width="2.2"/></svg>
+    <span>Contact</span>
+  </div>
+  <div class="desktop-icon" onclick="openWindow('win-education')">
+    <svg class="di-svg" viewBox="0 0 36 36"><defs><linearGradient id="g-ed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e05252"/><stop offset="100%" stop-color="#8b0000"/></linearGradient></defs><rect width="36" height="36" rx="4" fill="url(#g-ed)"/><polygon points="18,8 33,16 18,24 3,16" fill="white" opacity="0.95"/><rect x="29" y="16" width="2" height="9" rx="1" fill="white" opacity="0.8"/><circle cx="30" cy="26" r="2.2" fill="white" opacity="0.8"/><path d="M11 19.5 L11 27 Q18 31 25 27 L25 19.5 L18 24 Z" fill="white" opacity="0.9"/></svg>
+    <span>Education</span>
+  </div>
+</div>
+
+<div class="desktop">
+<div class="windows-container">
+
+<!-- ======= ABOUT ME ======= -->
+<div class="window" id="win-about">
+  <div class="title-bar" onmousedown="startDrag(event,'win-about')">
+    <div class="title-bar-text">About Me — Akhiljith Kumar</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-about')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-about')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-about')">X</button>
+    </div>
+  </div>
+  <div class="menu-bar" id="mb-about">
+    <div class="menu-item" onclick="toggleMenu(event,'mb-about','mab0')">File<div class="menu-dropdown" id="mab0">
+      <div class="menu-dropdown-item" onclick="showRamError()">New Window <span class="menu-shortcut">Ctrl+N</span></div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Open... <span class="menu-shortcut">Ctrl+O</span></div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Print <span class="menu-shortcut">Ctrl+P</span></div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="closeWindow('win-about')">Close</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-about','mab1')">Edit<div class="menu-dropdown" id="mab1">
+      <div class="menu-dropdown-item" onclick="showRamError()">Copy <span class="menu-shortcut">Ctrl+C</span></div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Select All <span class="menu-shortcut">Ctrl+A</span></div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-about','mab2')">View<div class="menu-dropdown" id="mab2">
+      <div class="menu-dropdown-item" onclick="showRamError()">Large Icons</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Details</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-about','mab3')">Help<div class="menu-dropdown" id="mab3">
+      <div class="menu-dropdown-item" onclick="showRamError()">Help Topics</div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="showRamError()">About</div>
+    </div></div>
+  </div>
+  <div class="window-content">
+    <div class="welcome-art" style="margin:-12px -12px 12px -12px;border-radius:0">
+      <div class="welcome-avatar">AK</div>
+      <div class="welcome-name">Akhiljith Kumar</div>
+      <div class="welcome-sub">Software Engineer &middot; Full-Stack Developer (MERN)</div>
+      <div style="margin-top:8px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+        <span class="profile-badge" style="background:#1a5acd;font-size:10px;padding:2px 8px">&#127968; Dublin, Ireland</span>
+        <span class="profile-badge" style="background:#1aa206;font-size:10px;padding:2px 8px">Available for hire</span>
+        <span class="profile-badge" style="background:#7b3f00;font-size:10px;padding:2px 8px">MSc · 1st Class Honours</span>
+      </div>
+    </div>
+    <div style="background:white;border:1px solid #c8d8ee;border-radius:3px;padding:8px 10px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+      <div style="flex:1">
+        <div style="font-size:10px;color:#666;margin-bottom:3px">Email</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:#0066cc;font-size:11px">akhiljithk112@gmail.com</span>
+          <button class="copy-btn" id="copyEmailBtn" onclick="copyEmail()">Copy</button>
+        </div>
+      </div>
+    </div>
+    <div class="xp-section">
+      <div class="xp-section-header">Summary</div>
+      <div class="xp-section-body">Full-Stack MERN Developer with 2+ years of professional experience building scalable SaaS platforms and AI-powered applications. Proven track record delivering secure, multi-tenant systems — from a healthcare platform serving care homes across the UK to a distributed AI job-application tool.</div>
+    </div>
+    <div class="xp-section">
+      <div class="xp-section-header">Core Technologies</div>
+      <div class="xp-section-body">
+        <span class="skill-tag">JavaScript ES6+</span><span class="skill-tag">React.js</span><span class="skill-tag">Node.js</span><span class="skill-tag">Express.js</span><span class="skill-tag">MongoDB</span><span class="skill-tag">Next.js</span><span class="skill-tag">AWS EC2/S3</span><span class="skill-tag">Python</span><span class="skill-tag">Redis</span><span class="skill-tag">OpenAI API</span><span class="skill-tag">llama.cpp</span><span class="skill-tag">JWT Auth</span><span class="skill-tag">MySQL</span><span class="skill-tag">Supabase</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;padding:4px 0 2px">
+      <button class="xp-btn" onclick="openWindow('win-experience')">Work Experience</button>
+      <button class="xp-btn" onclick="openWindow('win-projects')">Projects</button>
+      <button class="xp-btn" onclick="openWindow('win-skills')">Skills</button>
+      <button class="xp-btn" onclick="openWindow('win-contact')">Contact</button>
+      <button class="xp-btn" onclick="openWindow('win-education')">Education</button>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">2+ Years Experience</span><span class="status-panel">Dublin, Ireland</span></div>
+</div>
+
+<!-- ======= PROJECTS ======= -->
+<div class="window" id="win-projects">
+  <div class="title-bar" onmousedown="startDrag(event,'win-projects')">
+    <div class="title-bar-text">Projects — File Explorer</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-projects')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-projects')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-projects')">X</button>
+    </div>
+  </div>
+  <div class="menu-bar" id="mb-proj">
+    <div class="menu-item" onclick="toggleMenu(event,'mb-proj','mpr0')">File<div class="menu-dropdown" id="mpr0">
+      <div class="menu-dropdown-item" onclick="showRamError()">New Folder</div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="closeWindow('win-projects')">Close</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-proj','mpr1')">View<div class="menu-dropdown" id="mpr1">
+      <div class="menu-dropdown-item" onclick="showRamError()">Thumbnails</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Icons</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">List</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Details</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-proj','mpr2')">Favorites<div class="menu-dropdown" id="mpr2">
+      <div class="menu-dropdown-item" onclick="showRamError()">Add to Favorites</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Organize Favorites...</div>
+    </div></div>
+  </div>
+  <div class="window-content">
+    <div class="highlight-box">Double-click a project card to open its link.</div>
+    <div class="project-card" ondblclick="window.open('https://bit.ly/4pmhHZo','_blank')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="project-title">WhereIsMyJob — AI Job Application Assistant</div>
+        <span class="profile-badge">Chrome Extension</span>
+      </div>
+      <div class="project-hint">Double-click to open &rarr; <a href="https://bit.ly/4pmhHZo" target="_blank" style="color:#0066cc" onclick="event.stopPropagation()">bit.ly/4pmhHZo</a></div>
+      <div class="project-desc">Manifest V3 Chrome extension to save job details &amp; AI email generator tailored to CVs. Deployed <strong>Qwen2.5 LLM</strong> via llama.cpp on AWS EC2 for DOM data extraction. Distributed background processing with BullMQ + Redis. Secured with JWT and Google OAuth.</div>
+      <div style="margin-top:6px"><span class="skill-tag">JavaScript</span><span class="skill-tag">Node.js</span><span class="skill-tag">MongoDB</span><span class="skill-tag">Redis</span><span class="skill-tag">AWS EC2</span><span class="skill-tag">llama.cpp</span><span class="skill-tag">BullMQ</span></div>
+    </div>
+    <div class="project-card" ondblclick="window.open('http://ctgames-dev.cs.nuim.ie:8080','_blank')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="project-title">CTGames — Computational Thinking Puzzle Games</div>
+        <span class="profile-badge">Academic</span>
+      </div>
+      <div class="project-hint">Double-click to open &rarr; <a href="http://ctgames-dev.cs.nuim.ie:8080" target="_blank" style="color:#0066cc" onclick="event.stopPropagation()">ctgames-dev.cs.nuim.ie:8080</a></div>
+      <div class="project-desc">Contributed 3 new games to Maynooth University's CTGames framework teaching CS concepts (pattern recognition, constraint satisfaction, permutation reasoning) to primary school children. Dynamic level generation, reusable scoreboard module, SVG graphics and GSAP animations.</div>
+      <div style="margin-top:6px"><span class="skill-tag">Python</span><span class="skill-tag">Brython</span><span class="skill-tag">SVG</span><span class="skill-tag">GSAP</span><span class="skill-tag">JavaScript</span></div>
+    </div>
+    <div class="project-card" ondblclick="window.open('http://zlx20010815.uk','_blank')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="project-title">Story Collaboration Web App</div>
+        <span class="profile-badge">React</span>
+      </div>
+      <div class="project-hint">Double-click to open &rarr; <a href="http://zlx20010815.uk" target="_blank" style="color:#0066cc" onclick="event.stopPropagation()">zlx20010815.uk</a></div>
+      <div class="project-desc">Real-time collaborative story-writing app in React.js. Multiple users contribute and edit shared narratives simultaneously with rich text editor, DOM injection, full API integration and responsive UI.</div>
+      <div style="margin-top:6px"><span class="skill-tag">React.js</span><span class="skill-tag">REST API</span><span class="skill-tag">Real-time</span></div>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">3 object(s)</span><span class="status-panel">Double-click to open</span></div>
+</div>
+
+<!-- ======= EXPERIENCE ======= -->
+<div class="window closed" id="win-experience">
+  <div class="title-bar" onmousedown="startDrag(event,'win-experience')">
+    <div class="title-bar-text">Work Experience</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-experience')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-experience')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-experience')">X</button>
+    </div>
+  </div>
+  <div class="menu-bar" id="mb-exp">
+    <div class="menu-item" onclick="toggleMenu(event,'mb-exp','mex0')">File<div class="menu-dropdown" id="mex0">
+      <div class="menu-dropdown-item" onclick="showRamError()">Export as PDF</div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="closeWindow('win-experience')">Close</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-exp','mex1')">Edit<div class="menu-dropdown" id="mex1">
+      <div class="menu-dropdown-item" onclick="showRamError()">Copy <span class="menu-shortcut">Ctrl+C</span></div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Select All</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-exp','mex2')">View<div class="menu-dropdown" id="mex2">
+      <div class="menu-dropdown-item" onclick="showRamError()">Timeline View</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">Compact View</div>
+    </div></div>
+  </div>
+  <div class="window-content">
+    <div class="highlight-box">Double-click a company card to visit their website.</div>
+    <div class="xp-section">
+      <div class="xp-section-header">Junior Software Engineer</div>
+      <div class="xp-section-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px">
+          <div>
+            <div class="job-company" style="font-weight:bold;color:#333">Softnotions Technologies Pvt Ltd &middot; Trivandrum, India</div>
+            <div style="font-size:10px;color:#888;margin-top:1px">Feb 2024 – Aug 2024</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <a href="https://softnotions.com/" target="_blank" style="font-size:10px;color:#0066cc;text-decoration:underline">softnotions.com</a>
+            <span style="font-size:9px;color:#888;cursor:pointer" ondblclick="window.open('https://softnotions.com/','_blank')" title="Double-click to open">[dbl-click to open]</span>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <ul class="job-bullets">
+          <li>Contributed to <strong>Caredom</strong> (breis.co.uk), a healthcare SaaS app on MERN stack serving care homes across the UK.</li>
+          <li>Architected a multi-tenant system in Node.js &amp; MongoDB with Super Admin panel managing multiple client domains.</li>
+          <li>Achieved ~<strong>90% reduction</strong> in permission-check duplication via centralized RBAC system.</li>
+          <li>Implemented data workflows using AWS S3 for file storage, cron jobs, and SendGrid for email notifications.</li>
+          <li>Wrote comprehensive inline documentation improving maintainability and onboarding speed.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="xp-section exp-card" ondblclick="window.open('https://gadssolutions.in/','_blank')">
+      <div class="xp-section-header">Software Developer</div>
+      <div class="xp-section-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px">
+          <div>
+            <div class="job-company" style="font-weight:bold;color:#333">GADS LLP (Startup) &middot; Trivandrum, India</div>
+            <div style="font-size:10px;color:#888;margin-top:1px">Mar 2021 – Feb 2023</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <a href="https://gadssolutions.in/" target="_blank" style="font-size:10px;color:#0066cc;text-decoration:underline">gadssolutions.in</a>
+            <span style="font-size:9px;color:#888;cursor:pointer" ondblclick="window.open('https://gadssolutions.in/','_blank')" title="Double-click to open">[dbl-click to open]</span>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <ul class="job-bullets">
+          <li>Architected a centralised Super-Admin Dashboard in Node.js/Express for <strong>14 district-level operators</strong>.</li>
+          <li>Developed dynamic UI control logic via RESTful API for toggling interface elements and permissions in MongoDB.</li>
+          <li>Engineered backend services integrating <strong>SendGrid</strong> for email and <strong>Firebase FCM</strong> for push notifications.</li>
+          <li>Implemented secure JWT-based authentication and server-side rendering using Handlebars.js.</li>
+          <li>Translated Figma prototypes into production-ready features using CSS, Bootstrap, and MUI.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">2 positions</span><span class="status-panel">2021 – 2024</span></div>
+</div>
+
+<!-- ======= SKILLS ======= -->
+<div class="window closed" id="win-skills">
+  <div class="title-bar" onmousedown="startDrag(event,'win-skills')">
+    <div class="title-bar-text">Skills — System Properties</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-skills')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-skills')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-skills')">X</button>
+    </div>
+  </div>
+  <div class="menu-bar" id="mb-sk">
+    <div class="menu-item" onclick="toggleMenu(event,'mb-sk','msk0')">View<div class="menu-dropdown" id="msk0">
+      <div class="menu-dropdown-item" onclick="showRamError()">Chart View</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">List View</div>
+    </div></div>
+  </div>
+  <div class="window-content">
+    <div class="xp-section">
+      <div class="xp-section-header">Skill Proficiency</div>
+      <div class="xp-section-body" id="skills-container"></div>
+    </div>
+    <div class="xp-section">
+      <div class="xp-section-header">Tools and Platforms</div>
+      <div class="xp-section-body">
+        <span class="skill-tag">Git / GitHub</span><span class="skill-tag">Jira</span><span class="skill-tag">Postman</span><span class="skill-tag">Figma</span><span class="skill-tag">BullMQ</span><span class="skill-tag">Redis</span><span class="skill-tag">Firebase FCM</span><span class="skill-tag">SendGrid</span><span class="skill-tag">AWS EC2</span><span class="skill-tag">AWS S3</span><span class="skill-tag">Google Cloud</span><span class="skill-tag">Supabase</span>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">14 skills tracked</span></div>
+</div>
+
+<!-- ======= CONTACT ======= -->
+<div class="window closed" id="win-contact">
+  <div class="title-bar" onmousedown="startDrag(event,'win-contact')">
+    <div class="title-bar-text">Contact — Address Book</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-contact')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-contact')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-contact')">X</button>
+    </div>
+  </div>
+  <div class="window-content" style="padding:0">
+    <div class="contact-row">
+      <span class="contact-label">Email</span>
+      <span class="contact-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e3e9eaebeee8ebf6eae9b3b3b0c2e5efe3ebeeace1edef">[email&#160;protected]</a></span>
+      <button class="contact-btn" onclick="window.location='mailto:akhiljithk112@gmail.com'">Send Email</button>
+    </div>
+    <div class="contact-row">
+      <span class="contact-label">Location</span>
+      <span class="contact-value">Dublin, Ireland</span>
+      <button class="contact-btn" onclick="window.open('https://maps.google.com/?q=Dublin+Ireland','_blank')">Map</button>
+    </div>
+    <div style="padding:10px;background:var(--xp-silver-dark);border-top:1px solid var(--xp-silver-darker)">
+      <div style="font-weight:bold;font-size:11px;margin-bottom:6px;color:var(--xp-blue)">Online Profiles</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="contact-btn" onclick="window.open('https://github.com/kumar-akhiljith','_blank')">GitHub</button>
+        <button class="contact-btn" onclick="window.open('https://www.linkedin.com/in/akhiljith-k/','_blank')">LinkedIn</button>
+        <button class="contact-btn" onclick="window.open('https://bit.ly/4pmhHZo','_blank')">WhereIsMyJob</button>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">3 contact methods</span></div>
+</div>
+
+<!-- ======= EDUCATION ======= -->
+<div class="window closed" id="win-education">
+  <div class="title-bar" onmousedown="startDrag(event,'win-education')">
+    <div class="title-bar-text">Education and Achievements</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="minimizeWindow('win-education')">_</button>
+      <button class="title-btn" onclick="toggleMaximize('win-education')">&#9633;</button>
+      <button class="title-btn close" onclick="closeWindow('win-education')">X</button>
+    </div>
+  </div>
+  <div class="menu-bar" id="mb-edu">
+    <div class="menu-item" onclick="toggleMenu(event,'mb-edu','med0')">File<div class="menu-dropdown" id="med0">
+      <div class="menu-dropdown-item" onclick="showRamError()">Print Transcript</div>
+      <div class="menu-dropdown-sep"></div>
+      <div class="menu-dropdown-item" onclick="closeWindow('win-education')">Close</div>
+    </div></div>
+    <div class="menu-item" onclick="toggleMenu(event,'mb-edu','med1')">View<div class="menu-dropdown" id="med1">
+      <div class="menu-dropdown-item" onclick="showRamError()">Chronological</div>
+      <div class="menu-dropdown-item" onclick="showRamError()">By Institution</div>
+    </div></div>
+  </div>
+  <div class="window-content">
+    <div class="xp-section">
+      <div class="xp-section-header">Education</div>
+      <div class="xp-section-body" style="display:flex;flex-direction:column;gap:8px">
+        <div class="edu-entry">
+          <div class="edu-label">MSc</div>
+          <div>
+            <div class="edu-degree">MSc Software Engineering — First Class Honours (1:1)</div>
+            <div class="edu-school">Maynooth University &middot; Maynooth, Ireland</div>
+            <div class="edu-detail">Mathematics &amp; Theory of Computing &middot; Practical Cryptography &middot; Advanced OOP &middot; Software Testing &middot; Interaction Design</div>
+          </div>
+        </div>
+        <div class="edu-entry">
+          <div class="edu-label">BEng</div>
+          <div>
+            <div class="edu-degree">BEng Information Technology — 7.4 / 10</div>
+            <div class="edu-school">APJ Abdul Kalam Technological University &middot; Trivandrum, India</div>
+            <div class="edu-detail">Data Structures &middot; DBMS &middot; OS &middot; Web Development &middot; AI/ML &middot; Design and Analysis of Algorithms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="xp-section">
+      <div class="xp-section-header">Achievements</div>
+      <div class="xp-section-body">
+        <div class="achievement">
+          <div class="ach-icon">1st</div>
+          <div>
+            <div style="font-weight:bold;font-size:11px">1st Place — 48-Hour Game Development Hackathon</div>
+            <div style="font-size:10px;color:#666">Indian Society for Technical Education (ISTE) &middot; Built a game using Unity Engine and C# under a 48-hour time constraint.</div>
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="ach-icon">1:1</div>
+          <div>
+            <div style="font-weight:bold;font-size:11px">First Class Honours (1:1) — MSc Software Engineering</div>
+            <div style="font-size:10px;color:#666">Maynooth University, Ireland</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar"><span class="status-panel">2 degrees</span><span class="status-panel">1st Class Honours</span></div>
+</div>
+
+
+</div><!-- windows-container -->
+</div><!-- desktop -->
+
+<!-- RIGHT-CLICK CONTEXT MENU -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-item" onclick="ctxOpen('win-about')">About Me</div>
+  <div class="ctx-item" onclick="ctxOpen('win-experience')">Work Experience</div>
+  <div class="ctx-item" onclick="ctxOpen('win-projects')">Projects</div>
+  <div class="ctx-item" onclick="ctxOpen('win-skills')">Skills</div>
+  <div class="ctx-item" onclick="ctxOpen('win-contact')">Contact</div>
+  <div class="ctx-item" onclick="ctxOpen('win-education')">Education</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxProperties()">Properties</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxRefresh()">Refresh</div>
+</div>
+
+<!-- START MENU -->
+<div class="start-menu" id="startMenu">
+  <div class="start-menu-header">
+    <div class="start-avatar">AK</div>
+    <div><div style="font-weight:bold">Akhiljith Kumar</div><div style="font-size:10px;font-weight:normal;opacity:0.8">Software Engineer</div></div>
+  </div>
+  <div class="start-menu-item" onclick="openWindow('win-about');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#20c4a8"/><circle cx="10" cy="8" r="3.5" fill="white"/><path d="M2 18 Q2 13 10 13 Q18 13 18 18" fill="white"/></svg>About Me</div>
+  <div class="start-menu-item" onclick="openWindow('win-experience');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#9b6dff"/><rect x="3" y="9" width="14" height="8" rx="2" fill="white" opacity="0.9"/><rect x="7" y="5" width="6" height="5" rx="1" fill="none" stroke="white" stroke-width="2"/></svg>Work Experience</div>
+  <div class="start-menu-item" onclick="openWindow('win-skills');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#ff7a2f"/><path d="M10 3 L11.5 7 L16 6.5 L15 10 L19 12 L16 15.5 L18 19 L14 18.5 L12 22 L10 18.5 L8 22 L6 18.5 L2 19 L4 15.5 L1 12 L5 10 L4 6.5 L8.5 7Z" fill="white" opacity="0.85"/><circle cx="10" cy="11" r="3" fill="#ff7a2f"/></svg>Skills</div>
+  <div class="start-menu-item" onclick="openWindow('win-projects');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#f5c842"/><rect x="2" y="9" width="16" height="9" rx="2" fill="white" opacity="0.9"/><path d="M2 9 Q2 6 5 6 L9 6 L10.5 9Z" fill="white" opacity="0.75"/></svg>Projects</div>
+  <div class="start-menu-item" onclick="openWindow('win-contact');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#3399ff"/><rect x="2" y="5" width="16" height="11" rx="2" fill="white" opacity="0.9"/><path d="M2 7 L10 13 L18 7" fill="none" stroke="#0044cc" stroke-width="2"/></svg>Contact</div>
+  <div class="start-menu-item" onclick="openWindow('win-education');closeStart()">
+    <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#c0392b"/><polygon points="10,3 19,8.5 10,14 1,8.5" fill="white" opacity="0.95"/><path d="M5 10.5 L5 15.5 Q10 18.5 15 15.5 L15 10.5 L10 14Z" fill="white" opacity="0.9"/></svg>Education</div>
+  <div class="start-menu-footer">
+    <button class="start-footer-btn" onclick="doShutdown()">Shut Down</button>
+    <button class="start-footer-btn" onclick="doRestart()">Log Off / Restart</button>
+  </div>
+</div>
+
+<!-- TASKBAR -->
+<div class="taskbar">
+  <button class="start-btn" onclick="toggleStart()">
+    <div class="win-logo"><span></span><span></span><span></span><span></span></div>
+    start
+  </button>
+  <div class="taskbar-tasks" id="taskbarTasks">
+    <!-- Buttons injected by JS -->
+  </div>
+  <div class="taskbar-tray">
+    <span style="font-size:12px;cursor:pointer" title="Volume">&#128266;</span>
+    <span style="font-size:12px;cursor:pointer" title="Network">&#127760;</span>
+    <span id="clock">12:00 PM</span>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ===== CONFIG =====
+const WIN_CONFIG = {
+  'win-about':      { label: 'About Me',   short: 'Ab', defaultOpen: true },
+  'win-projects':   { label: 'Projects',   short: 'Pr', defaultOpen: true },
+  'win-experience': { label: 'Experience', short: 'Ex', defaultOpen: false },
+  'win-skills':     { label: 'Skills',     short: 'Sk', defaultOpen: false },
+  'win-contact':    { label: 'Contact',    short: 'Co', defaultOpen: false },
+  'win-education':  { label: 'Education',  short: 'Ed', defaultOpen: false },
+};
+
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clock').textContent = `${h}:${String(m).padStart(2,'0')} ${ap}`;
+}
+updateClock(); setInterval(updateClock, 10000);
+
+// ===== Z-INDEX =====
+let zTop = 100;
+
+// ===== TASKBAR BUTTONS =====
+function buildTaskbar() {
+  const container = document.getElementById('taskbarTasks');
+  container.innerHTML = '';
+  Object.entries(WIN_CONFIG).forEach(([id, cfg]) => {
+    const btn = document.createElement('button');
+    btn.className = 'task-btn';
+    btn.id = 'task-' + id;
+    btn.style.display = 'none';
+    btn.innerHTML = `<span class="task-icon-box">${cfg.short}</span><span class="task-label">${cfg.label}</span>`;
+    btn.onclick = () => toggleWindow(id);
+    container.appendChild(btn);
+  });
+}
+buildTaskbar();
+
+function showTaskBtn(id) {
+  const tb = document.getElementById('task-' + id);
+  if (tb) tb.style.display = 'flex';
+}
+function hideTaskBtn(id) {
+  const tb = document.getElementById('task-' + id);
+  if (tb) { tb.style.display = 'none'; tb.classList.remove('active'); }
+}
+
+function setActiveTask(id) {
+  document.querySelectorAll('.task-btn').forEach(b => b.classList.remove('active'));
+  const tb = document.getElementById('task-' + id);
+  if (tb) tb.classList.add('active');
+}
+
+// ===== FOCUS =====
+function focusWindow(id) {
+  document.querySelectorAll('.window').forEach(w => w.classList.add('inactive'));
+  const win = document.getElementById(id);
+  if (!win) return;
+  win.classList.remove('inactive');
+  win.style.zIndex = ++zTop;
+  setActiveTask(id);
+}
+
+// ===== OPEN =====
+function openWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  win.classList.remove('closed');
+  showTaskBtn(id);
+  focusWindow(id);
+  if (id === 'win-skills') {
+    // Reset bars first so animation plays again
+    document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.transition = 'none'; b.style.width = '0%'; });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.transition = 'width 1s ease'; b.style.width = b.dataset.pct + '%'; });
+    }));
+  }
+}
+
+// ===== CLOSE =====
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  win.classList.add('closed');
+  win.classList.remove('maximized');
+  hideTaskBtn(id);
+  // Focus next open window
+  const open = [...document.querySelectorAll('.window')].filter(w => !w.classList.contains('closed'));
+  if (open.length) focusWindow(open[open.length - 1].id);
+}
+
+// ===== MINIMIZE (hides window, keeps taskbar btn) =====
+function minimizeWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  win.classList.add('closed');
+  win.dataset.minimized = '1';
+  const tb = document.getElementById('task-' + id);
+  if (tb) tb.classList.remove('active');
+}
+
+// ===== TOGGLE (taskbar click) =====
+function toggleWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  const tb = document.getElementById('task-' + id);
+  if (win.classList.contains('closed')) {
+    win.classList.remove('closed');
+    win.dataset.minimized = '';
+    focusWindow(id);
+    if (id === 'win-skills') {
+      document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.transition = 'none'; b.style.width = '0%'; });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.transition = 'width 1s ease'; b.style.width = b.dataset.pct + '%'; });
+      }));
+    }
+  } else {
+    if (tb && tb.classList.contains('active')) {
+      minimizeWindow(id);
+    } else {
+      focusWindow(id);
+    }
+  }
+}
+
+// ===== MAXIMIZE =====
+const winSizes = {};
+function toggleMaximize(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  if (win.classList.contains('maximized')) {
+    win.classList.remove('maximized');
+    if (winSizes[id]) {
+      win.style.width = winSizes[id].w;
+      win.style.top   = winSizes[id].t;
+      win.style.left  = winSizes[id].l;
+    }
+  } else {
+    winSizes[id] = { w: win.style.width || '', t: win.style.top || '', l: win.style.left || '' };
+    win.classList.add('maximized');
+  }
+}
+
+// ===== DRAG =====
+let dragging = null, dragOffX = 0, dragOffY = 0;
+
+function startDrag(e, id) {
+  if (e.target.classList.contains('title-btn')) return;
+  const win = document.getElementById(id);
+  if (!win || win.classList.contains('maximized')) return;
+  dragging = id;
+  const rect = win.getBoundingClientRect();
+  dragOffX = e.clientX - rect.left;
+  dragOffY = e.clientY - rect.top;
+  focusWindow(id);
+  e.preventDefault();
+}
+document.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const win = document.getElementById(dragging);
+  if (!win) return;
+  win.style.left = (e.clientX - dragOffX) + 'px';
+  win.style.top  = (e.clientY - dragOffY) + 'px';
+});
+document.addEventListener('mouseup', () => { dragging = null; });
+
+// Touch drag
+document.querySelectorAll('.title-bar').forEach(tb => {
+  tb.addEventListener('touchstart', e => {
+    const id = tb.closest('.window').id;
+    const win = document.getElementById(id);
+    if (!win || win.classList.contains('maximized')) return;
+    const t = e.touches[0];
+    const rect = win.getBoundingClientRect();
+    dragging = id; dragOffX = t.clientX - rect.left; dragOffY = t.clientY - rect.top;
+    focusWindow(id);
+  });
+});
+document.addEventListener('touchmove', e => {
+  if (!dragging) return;
+  const t = e.touches[0];
+  const win = document.getElementById(dragging);
+  if (win) { win.style.left = (t.clientX - dragOffX) + 'px'; win.style.top = (t.clientY - dragOffY) + 'px'; }
+}, { passive: true });
+document.addEventListener('touchend', () => { dragging = null; });
+
+// Focus on window mousedown
+document.querySelectorAll('.window').forEach(win => {
+  win.addEventListener('mousedown', () => { if (!win.classList.contains('closed')) focusWindow(win.id); });
+});
+
+// ===== MENU BAR =====
+function toggleMenu(e, barId, menuId) {
+  e.stopPropagation();
+  const item = e.currentTarget;
+  const bar = document.getElementById(barId);
+  const allItems = bar.querySelectorAll('.menu-item');
+  const isOpen = item.classList.contains('open');
+  allItems.forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.menu-item.open').forEach(i => i.classList.remove('open'));
+});
+
+// ===== RAM ERROR =====
+function showRamError() {
+  document.getElementById('errorOverlay').classList.add('show');
+  document.getElementById('errorDialog').classList.add('show');
+}
+function closeError() {
+  document.getElementById('errorOverlay').classList.remove('show');
+  document.getElementById('errorDialog').classList.remove('show');
+}
+
+// ===== START MENU =====
+function toggleStart() { document.getElementById('startMenu').classList.toggle('open'); }
+function closeStart() { document.getElementById('startMenu').classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.start-btn') && !e.target.closest('.start-menu')) closeStart();
+});
+
+// ===== SHUTDOWN / RESTART =====
+function doShutdown() {
+  closeStart();
+  const s = document.getElementById('screen-shutdown');
+  s.classList.add('show');
+  setTimeout(() => {
+    window.close();
+    s.textContent = 'It is now safe to close this tab.';
+  }, 2000);
+}
+function doRestart() {
+  closeStart();
+  const s = document.getElementById('screen-restart');
+  s.classList.add('show');
+  setTimeout(() => location.reload(), 2000);
+}
+
+// ===== COPY EMAIL =====
+function copyEmail() {
+  const email = 'akhiljithk112@gmail.com';
+  const btn = document.getElementById('copyEmailBtn');
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = email; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  };
+  (navigator.clipboard ? navigator.clipboard.writeText(email) : Promise.reject()).catch(fallback)
+    .then ? navigator.clipboard.writeText(email).then(() => {
+      btn.textContent = 'Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => { fallback(); btn.textContent = 'Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000); })
+    : (fallback(), btn.textContent = 'Copied!', btn.classList.add('copied'), setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000));
+}
+
+// ===== SKILLS =====
+const skills = [
+  { name: 'JavaScript / ES6+', pct: 92 },
+  { name: 'React.js / Next.js', pct: 88 },
+  { name: 'Node.js / Express', pct: 90 },
+  { name: 'MongoDB / Databases', pct: 85 },
+  { name: 'AWS (EC2, S3)', pct: 75 },
+  { name: 'Python', pct: 70 },
+  { name: 'REST APIs / JWT Auth', pct: 90 },
+  { name: 'Redis / BullMQ', pct: 68 },
+];
+const sc = document.getElementById('skills-container');
+skills.forEach(s => {
+  const row = document.createElement('div');
+  row.className = 'skill-row';
+  row.innerHTML = `<div class="skill-name">${s.name} <span style="float:right;color:#666">${s.pct}%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:0%" data-pct="${s.pct}"></div></div>`;
+  sc.appendChild(row);
+});
+let barsAnimated = false;
+function animateBars() {
+  document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.width = b.dataset.pct + '%'; });
+  barsAnimated = true;
+}
+
+// ===== RESIZE HANDLES =====
+const RESIZE_DIRS = ['n','ne','e','se','s','sw','w','nw'];
+document.querySelectorAll('.window').forEach(win => {
+  RESIZE_DIRS.forEach(dir => {
+    const h = document.createElement('div');
+    h.className = `resize-handle resize-${dir}`;
+    h.dataset.dir = dir;
+    h.addEventListener('mousedown', startResize);
+    win.appendChild(h);
+  });
+});
+
+let resizing = false, resizeWin = null, resizeDir = '', resizeStart = {};
+function startResize(e) {
+  e.preventDefault(); e.stopPropagation();
+  resizing = true;
+  resizeWin = e.target.closest('.window');
+  resizeDir = e.target.dataset.dir;
+  const r = resizeWin.getBoundingClientRect();
+  resizeStart = { x: e.clientX, y: e.clientY, w: r.width, h: r.height, l: r.left, t: r.top };
+  focusWindow(resizeWin.id);
+}
+document.addEventListener('mousemove', e => {
+  if (!resizing || !resizeWin) return;
+  const dx = e.clientX - resizeStart.x, dy = e.clientY - resizeStart.y;
+  let { w, h, l, t } = resizeStart;
+  const minW = 280, minH = 120;
+  if (resizeDir.includes('e')) w = Math.max(minW, w + dx);
+  if (resizeDir.includes('s')) h = Math.max(minH, h + dy);
+  if (resizeDir.includes('w')) { const nw = Math.max(minW, w - dx); l += (w - nw); w = nw; }
+  if (resizeDir.includes('n')) { const nh = Math.max(minH, h - dy); t += (h - nh); h = nh; }
+  resizeWin.style.width = w + 'px';
+  resizeWin.style.left  = l + 'px';
+  resizeWin.style.top   = t + 'px';
+  const wc = resizeWin.querySelector('.window-content');
+  if (wc) wc.style.maxHeight = Math.max(60, h - 85) + 'px';
+});
+document.addEventListener('mouseup', () => { resizing = false; resizeWin = null; });
+
+// ===== RIGHT-CLICK CONTEXT MENU =====
+const ctxMenu = document.getElementById('ctxMenu');
+document.addEventListener('contextmenu', e => {
+  if (e.target.closest('.window') || e.target.closest('.taskbar') || e.target.closest('.start-menu')) return;
+  e.preventDefault();
+  closeStart();
+  ctxMenu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
+  ctxMenu.style.top  = Math.min(e.clientY, window.innerHeight - 220) + 'px';
+  ctxMenu.classList.add('show');
+});
+document.addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) ctxMenu.classList.remove('show'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') ctxMenu.classList.remove('show'); });
+function ctxOpen(id) { ctxMenu.classList.remove('show'); openWindow(id); }
+function ctxRefresh() { ctxMenu.classList.remove('show'); }
+function ctxProperties() { ctxMenu.classList.remove('show'); openWindow('win-about'); }
+
+// ===== INIT =====
+Object.entries(WIN_CONFIG).forEach(([id, cfg]) => { if (cfg.defaultOpen) openWindow(id); });
+focusWindow('win-about');
+</script>
+</body>
+</html>
