@@ -402,16 +402,17 @@
       <div class="welcome-name">Akhiljith Kumar</div>
       <div class="welcome-sub">Software Engineer &middot; Full-Stack Developer (MERN)</div>
       <div style="margin-top:8px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
-        <span class="profile-badge" style="background:#1a5acd;font-size:10px;padding:2px 8px">&#127968; Dublin, Ireland</span>
-        <span class="profile-badge" style="background:#1aa206;font-size:10px;padding:2px 8px">Available for hire</span>
-        <span class="profile-badge" style="background:#7b3f00;font-size:10px;padding:2px 8px">MSc · 1st Class Honours</span>
+        <span class="profile-badge" style="background:#1a5acd;font-size:10px;padding:2px 8px">Dublin, Ireland</span>
+        <!-- <span class="profile-badge" style="background:#1aa206;font-size:10px;padding:2px 8px">Available for hire</span> -->
+        <span class="profile-badge" style="background:#7b3f00;font-size:10px;padding:2px 8px">MSc Software Engineering</span>
       </div>
     </div>
     <div style="background:white;border:1px solid #c8d8ee;border-radius:3px;padding:8px 10px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
       <div style="flex:1">
         <div style="font-size:10px;color:#666;margin-bottom:3px">Email</div>
         <div style="display:flex;align-items:center;gap:6px">
-          <span style="color:#0066cc;font-size:11px">akhiljithk112@gmail.com</span>
+          <!-- <span style="color:#0066cc;font-size:11px">akhiljithk112@gmail.com</span> -->
+          <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e3e9eaebeee8ebf6eae9b3b3b0c2e5efe3ebeeace1edef">[email&#160;protected]</a></span>
           <button class="copy-btn" id="copyEmailBtn" onclick="copyEmail()">Copy</button>
         </div>
       </div>
@@ -742,7 +743,7 @@
     <svg class="sm-icon" viewBox="0 0 20 20"><rect width="20" height="20" rx="3" fill="#c0392b"/><polygon points="10,3 19,8.5 10,14 1,8.5" fill="white" opacity="0.95"/><path d="M5 10.5 L5 15.5 Q10 18.5 15 15.5 L15 10.5 L10 14Z" fill="white" opacity="0.9"/></svg>Education</div>
   <div class="start-menu-footer">
     <button class="start-footer-btn" onclick="doShutdown()">Shut Down</button>
-    <button class="start-footer-btn" onclick="doRestart()">Log Off / Restart</button>
+    <button class="start-footer-btn" onclick="doRestart()">Restart</button>
   </div>
 </div>
 
@@ -898,11 +899,12 @@ function toggleMaximize(id) {
     win.classList.remove('maximized');
     if (winSizes[id]) {
       win.style.width = winSizes[id].w;
+      win.style.height = winSizes[id].h;
       win.style.top   = winSizes[id].t;
       win.style.left  = winSizes[id].l;
     }
   } else {
-    winSizes[id] = { w: win.style.width || '', t: win.style.top || '', l: win.style.left || '' };
+    winSizes[id] = { h: win.style.height || '', w: win.style.width || '', t: win.style.top || '', l: win.style.left || '' };
     win.classList.add('maximized');
   }
 }
@@ -1026,7 +1028,7 @@ const skills = [
   { name: 'React.js / Next.js', pct: 88 },
   { name: 'Node.js / Express', pct: 90 },
   { name: 'MongoDB / Databases', pct: 85 },
-  { name: 'AWS (EC2, S3)', pct: 75 },
+  { name: 'AWS (EC2, S3)', pct: 45 },
   { name: 'Python', pct: 70 },
   { name: 'REST APIs / JWT Auth', pct: 90 },
   { name: 'Redis / BullMQ', pct: 68 },
